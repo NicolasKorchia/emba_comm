@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)http://gvsmirnov.ru/docs/presentations/java-concurrency-hands-on/#/step-4 -->
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="overflow: hidden; height: 100%;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+    <title>Java Concurrency Under The Hood</title>
+
+    <link href="./Java Concurrency Under The Hood_files/impress.css" rel="stylesheet">
+    <link href="./Java Concurrency Under The Hood_files/prettify.css" rel="stylesheet">
+    <link href="./Java Concurrency Under The Hood_files/animation.css" rel="stylesheet">
+    <link href="./Java Concurrency Under The Hood_files/bootstrap.min.css" rel="stylesheet">
+    <link href="./Java Concurrency Under The Hood_files/fonts.css" rel="stylesheet">
+
+    <script src="./Java Concurrency Under The Hood_files/jquery.min.js"></script>
+    <script src="./Java Concurrency Under The Hood_files/jmpress.impress.js"></script>
+    <script src="./Java Concurrency Under The Hood_files/prettify.js"></script>
+    <script src="./Java Concurrency Under The Hood_files/bootstrap.min.js"></script>
+
+</head>
+<body style="height: 100%; overflow: hidden;">
+
+    <div id="impress" style="transform-origin: left top 0px; transition: transform 1s ease-in-out 0s, perspective, opacity; transform-style: preserve-3d; position: absolute; left: 50%; top: 50%; perspective: 1000px; transform: translate(-50%, -50%) scaleX(1) scaleY(1) scaleZ(1) scaleX(1) scaleY(1) scaleZ(1);" class="step-step-4 delegating-step-step-4">
+
+        
+
+        <!-- LEAKY ABSTRACTIONS -->
+
+        
+
+        
+
+        <!-- LEAKY ABSTRACTIONS END -->
+
+        <!-- CACHES -->
+
+        
+
+        
+
+        <!-- CACHES END -->
+
+        <!-- MOORE'S LAW -->
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <!-- MOORE'S LAW ENDS -->
+
+        
+
+        <!-- CACHE COHERENCY -->
+
+        
+
+        
+
+        
+
+        
+
+        <!-- CACHE COHERENCY ENDS -->
+
+        <!-- STORE BUFFERS -->
+
+        
+
+        
+
+        <!-- STORE BUFFERS END -->
+
+        <!-- INVALIDATE QUEUES -->
+
+        
+
+        
+
+        <!-- INVALIDATE QUEUES END -->
+
+        <!-- MESI BARRIERS -->
+
+        
+
+        
+
+        
+
+        
+
+        <!-- MESI BARRIERS END -->
+
+        <!-- MORE HIGH-LEVEL BARRIERS -->
+
+        
+
+        
+
+        
+
+        
+
+        <!-- MORE HIGH-LEVEL BARRIERS END -->
+
+        <!-- LIVE DEMO STUFF -->
+
+        
+
+        
+
+        
+
+        <!-- LIVE DEMO STUFF ENDS -->
+
+        <!-- MUTUAL EXCLUSION -->
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <!-- MUTUAL EXCLUSION ENDS -->
+
+        <!-- LAST REMARKS -->
+
+        
+
+        
+
+        
+
+        <!-- LAST REMARKS END -->
+
+
+    <div style="transform-origin: left top 0px; transition: transform 1s ease-in-out 0s, perspective, opacity; transform-style: preserve-3d; position: absolute; transform: translate(-50%, -50%) scaleX(1) scaleY(1) scaleZ(1) rotateZ(0deg) rotateY(0deg) rotateX(0deg) translate3d(0px, 0px, 0px) scaleX(1) scaleY(1) scaleZ(1) rotateZ(0deg) rotateY(0deg) rotateX(0deg) translate3d(-1300px, 0px, 0px);"><div class="step step-title" data-y="-800" id="step-1" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(0px, -800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="jumbotron text-center">
+                <h1>
+                    Java Concurrency:
+                    Under The Hood
+                </h1>
+                <p>#volatile #membar #dragons #openjdk #mesi</p>
+                <p>#jmm #store #load #omg #internals</p>
+                <p>#cachecoherency</p>
+                <p>#jugru</p>
+
+                <footer>
+                    <h2>Gleb Smirnov</h2>
+                    <h3>me<span class="text-info">@gvsmirnov</span>.ru</h3>
+                </footer>
+
+            </div>
+        </div><div class="step step-slide" id="step-2" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Leaky Abstractions</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Each abstraction level obscures <span class="text-muted"> implementation details</span>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Things that happen on <b>lower levels</b>
+                    affect <b>high-level</b> behavior
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Some phenomena <b>cannot be explained</b> using high-level terms
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    In other words, abstractions leak
+                </li>
+            </ul>
+        </div><div class="step step-slide spoiler fill-bg" id="step-3" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="text-center">
+                <img class="graph scale-to-fit-h" src="./Java Concurrency Under The Hood_files/go-deeper.jpg">
+            </div>
+        </div><div class="step step-slide active" data-x="1300" id="step-4" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Just Another Brick In The Wall</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Accessing RAM can take <b>hundreds of nanoseconds</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Basic instructions are several <b>orders of magnitude</b> faster
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Don't want to stall the CPU much
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Better keep the most frequently used data at hand
+                </li>
+            </ul>
+        </div><div class="step step-slide spoiler" data-x="1300" id="step-5" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="jumbotron text-center">
+                <h1 class="margin-a-lot"><span class="text-success text-giant">Yay Caches!</span></h1>
+            </div>
+        </div><div class="step step-slide" data-x="2600" id="step-6" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(2600px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Moore's Law</h1>
+
+            <blockquote>
+                <!-- http://www.intel.com/content/www/us/en/history/museum-gordon-moore-law.html -->
+                <p>
+                    The number of transistors incorporated in a chip
+                    will approximately double every 24 months
+                </p>
+                <footer> — Gordon Earle Moore, 1964</footer>
+            </blockquote>
+
+        </div><div class="step step-slide" data-x="3900" id="step-7" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(3900px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="text-center">
+                <img class="graph" src="./Java Concurrency Under The Hood_files/moores-law.jpg">
+            </div>
+        </div><div class="step step-slide" data-x="5200" id="step-8" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(5200px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="text-center">
+                <!-- http://queue.acm.org/detail.cfm?id=2181798 -->
+                <img class="graph scale-to-fit-h" src="./Java Concurrency Under The Hood_files/horowitz_fig7.png">
+            </div>
+        </div><div class="step step-slide" data-x="6500" id="step-9" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(6500px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1 class="text-smaller">One Does Not Simply Increase Clock Rate</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Smaller transistors ⇒ more resistance ⇒ smaller frequency
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Less power consumption ⇒ smaller frequency
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    We still want the performance to double
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Have "spare" transistors
+                </li>
+            </ul>
+        </div><div class="step step-slide spoiler" data-x="6500" id="step-10" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(6500px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="jumbotron text-center">
+                <h1 class="margin-a-lot"><span class="text-success text-giant">Yay Multi-Core!</span></h1>
+            </div>
+        </div><div class="step step-slide" data-y="800" id="step-11" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(0px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Parallelize And Conquer</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    We can execute <b>more programs</b> concurrently
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Problems can be <b>split</b> into parallelly-executed parts
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    But these parts may have some <b>shared state</b>
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="800" data-x="1300" id="step-12" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Cache Coherency</h1>
+
+            <blockquote>
+                <p>
+                    How would processor <b>A</b> know that processor <b>B</b> had modified some value,
+                    if <b>A</b> had cached it some time ago?
+                </p>
+                <footer> — A Dangerously Curious Dude</footer>
+            </blockquote>
+        </div><div class="step spoiler" data-y="800" data-x="1300" id="step-13" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="text-center">
+                <!-- http://explosm.net/comics/2334/ -->
+                <img class="graph scale-to-fit-h" src="./Java Concurrency Under The Hood_files/comicsplittingtheatom1.png">
+            </div>
+        </div><div class="step step-slide" data-y="800" data-x="2600" id="step-14" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(2600px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Cache Coherency Protocols</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    The processors must maintain a <b>consistent</b> view of the world
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Always using <b>main memory</b> would ruin performance
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    The processors need to <b>communicate</b> with each other
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Various communication <b>protocols</b> are possible
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="800" data-x="3900" id="step-15" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(3900px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>MESI <span class="text-muted">(Just An Example, Mind You)</span></h1>
+
+            <p data-jmpress="fade" class="will-fade">
+                Each cache entry can have one of the following states:
+            </p>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>I</b>nvalid: this cache does not contain the entry
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>E</b>xclusive: the entry resides in this cache only
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>M</b>odified: this processor has modified the entry
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>S</b>hared: more than one cache contains the entry
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="800" data-x="5200" id="step-16" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(5200px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Store Buffers</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    When one processor wants to write something, it tells
+                    the other processors to <b>invalidate</b> their copy of it
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    But it may take a while to receive all the <b>acknowledgements</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    So, the processor <b>buffers</b> the write, and goes on executing stuff
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Only when all the <b>acknowledgements</b> arrive, the write finally gets executed
+                </li>
+            </ul>
+        </div><div class="step nested-steps" data-y="800" data-x="6500" id="step-17" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(6500px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="row">
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu0</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+    finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu1</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="200" id="step-18" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h1>
+                            What could <i>possibly</i> go wrong?
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="350" id="step-19" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 350px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Exclusive</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span></pre>
+                    </div>
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Exclusive</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="500" id="step-20" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 500px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="550" id="step-21" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 550px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> store_buffer</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="800" id="step-22" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 800px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Modified</span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="pun">→</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></span>
+</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="900" id="step-23" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 900px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1000" id="step-24" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1100" id="step-25" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1100px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+                        <div class="alert alert-danger">
+                            <p>
+                                Assertion fails
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1230" id="step-26" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1230px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate_ack</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="step step-slide" data-rotate="90" data-y="3000" data-x="6500" id="step-27" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(6500px, 3000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Invalidate Queues</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Executing an <b>invalidation</b> can take time
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    The work of the process executing it will be <b>disrupted</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    The processor waiting for acknowledgement will be <b>stalled</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    So, the <b>acknowledgements</b> are sent immediately
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    The invalidations are <b>queued</b>, to be executed when convenient
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>No messages</b> on that cache entry are sent before that moment
+                </li>
+            </ul>
+        </div><div class="step nested-steps" data-rotate="90" data-y="4300" data-x="6500" id="step-28" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(6500px, 4300px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="row">
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu0</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+    finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu1</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="200" id="step-29" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h1>
+                            What <i>else</i> could go wrong?
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="350" id="step-30" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 350px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Exclusive</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="500" id="step-31" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 500px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="550" id="step-32" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 550px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> store_buffer</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="700" id="step-33" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 700px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Modified</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="750" id="step-34" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 750px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate_ack</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> invalidate_queue</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="850" id="step-35" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 850px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="900" id="step-36" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 900px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1000" id="step-37" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1100" id="step-38" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1100px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+                        <div class="alert alert-danger">
+                            <p>
+                                Assertion fails
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1200" id="step-39" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="step step-slide" data-y="1600" data-x="1300" id="step-40" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 1600px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Hardware Memory Model</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Hardware engineers cannot know <b>in advance</b> when optimizations could break stuff and when they won't
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Software engineers know how their code <b>should</b> behave
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    They need the ability to <b>influence</b> hardware optimizations
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="1600" data-x="2600" id="step-41" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(2600px, 1600px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Store Memory Barriers In MESI</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Some stores <code>S<sub>1</sub></code> were placed to the Store Buffer
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    A <b>Store Memory Barrier</b> was issued
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    More stores <code>S<sub>2</sub></code> were executed
+                </li>
+                <li class="list-unstyled">
+                    &nbsp;
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    All the stores from <code>S<sub>1</sub></code> will be committed
+                    <b>before</b> any store from <code>S<sub>2</sub></code>
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="1600" data-x="3900" id="step-42" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(3900px, 1600px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Load Memory Barriers In MESI</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Some invalidation requests <code>I</code> were placed to the Invalidate Queue
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    A <b>Load Memory Barrier</b> was issued
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Some operations <code>OPS</code> come next in the program order
+                </li>
+                <li class="list-unstyled">
+                    &nbsp;
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    All the invalidations from <code>I</code> will be executed
+                    <b>before</b> <br>any operation from <code>OPS</code>
+                </li>
+            </ul>
+        </div><div class="step nested-steps" data-y="1600" data-x="5200" id="step-43" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(5200px, 1600px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="row">
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu0</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">Magic</span><span class="pun">.</span><span class="pln">storeMemoryBarrier</span><span class="pun">();</span><span class="pln">
+    finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+                <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">void</span><span class="pln"> executedOnCpu1</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Magic</span><span class="pun">.</span><span class="pln">loadMemoryBarrier</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="200" id="step-44" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h1>
+                            Everyone <i>loves</i> magic <snan class="text-muted">(and unicorns)</snan>!
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="350" id="step-45" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 350px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Exclusive</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span><span class="pln">
+value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="500" id="step-46" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 500px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">while</span><span class="pun">(!</span><span class="pln">finished</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="550" id="step-47" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 550px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pln">value </span><span class="pun">=</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> store_buffer</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="typ">Magic</span><span class="pun">.</span><span class="pln">storeMemoryBarrier</span><span class="pun">();</span></span>
+</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="700" id="step-48" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 700px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> invalidate</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> invalidate_ack</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> invalidate_queue</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="900" id="step-49" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 900px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> invalidate_ack</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> writeback</span><span class="pun">(</span><span class="pln">value</span><span class="pun">,</span><span class="pln"> </span><span class="lit">10</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Exclusive</span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="pln">finished </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Modified</span></span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="pun">→</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></span>
+</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1200" id="step-50" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">finished</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> finished</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="typ">Magic</span><span class="pun">.</span><span class="pln">loadMemoryBarrier</span><span class="pun">();</span></span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Invalid</span></span><span class="pln">
+
+</span><span data-jmpress="fade" class="will-fade"><span class="kwd">assert</span><span class="pln"> value </span><span class="pun">==</span><span class="pln"> </span><span class="lit">10</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span></span>
+</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1400" id="step-51" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1400px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read</span><span class="pun">(</span><span class="pln">value</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">←</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">value</span><span class="pun">,</span><span class="pln"> </span><span class="lit">10</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1450" id="step-52" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1450px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+<pre class="prettyprint lang-java prettyprinted"><span class="pun">→</span><span class="pln"> read_response</span><span class="pun">(</span><span class="pln">value</span><span class="pun">,</span><span class="pln"> </span><span class="lit">10</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">-</span><span class="pln"> value</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Shared</span><span class="pln"> </span><span class="pun">(</span><span class="lit">10</span><span class="pun">)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step visit-me" data-y="1570" id="step-53" style="position: absolute; transform-style: preserve-3d; top: 50%; left: 50%; transform: translate(-50%, -50%) translate3d(0px, 1570px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+                <div class="row">
+                    <div class="col-md-offset-6 col-md-6">
+                        <div class="alert alert-success">
+                            <p>
+                                Assertion passes
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="step step-slide" data-y="2400" id="step-54" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(0px, 2400px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Must Construct Additional Abstractions</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    There are many <b>different protocols</b> besides MESI
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Many other things can result in <b>Out Of Order Execution</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Some may have <b>no notion</b> of a Store Buffer or Invalidate queue
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Need to be able to reason about them <b>in general</b>
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    The concept of a <b>Load</b> or a <b>Store</b> still remains
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="2400" data-x="1300" id="step-55" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(1300px, 2400px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>For X, Y in [Store, Load]:</h1>
+
+            <div class="text-center well will-fade" data-jmpress="fade">
+                <p>
+                    All the <code>X</code> operations that precede an <code>XY</code> barrier will complete
+                </p>
+                <p data-jmpress="fade" class="will-fade">
+                    <b>before</b>
+                </p>
+                <p data-jmpress="fade" class="will-fade">
+                    Any <code>Y</code> operation that succeeds the <code>XY</code> barrier starts
+                </p>
+            </div>
+        </div><div class="step step-slide" data-y="2400" data-x="2600" id="step-56" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(2600px, 2400px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>For Instance</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Suppose some stores <code>S<sub>1</sub></code> were executed
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    A <code>StoreStore</code> memory barrier was issued
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    Some more stores <code>S<sub>2</sub></code> follow
+                </li>
+                <li class="list-unstyled">&nbsp;</li>
+                <li data-jmpress="fade" class="will-fade">
+                    All the stores in <code>S<sub>1</sub></code> will complete <b>before</b>
+                    any store in <code>S<sub>2</sub></code> starts
+                </li>
+                <li data-jmpress="fade" class="list-unstyled text-muted will-fade">
+                    (Incidentally, this is the Store Memory Barrier in MESI)
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-y="2400" data-x="3900" id="step-57" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(3900px, 2400px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>Acquire And Release Semantics</h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    <p>
+                        All the memory operations:
+                    </p>
+                    <ul>
+                        <li data-jmpress="fade" class="will-fade">
+                            preceding a <b>release</b> must complete before it starts
+                        </li>
+                        <li data-jmpress="fade" class="will-fade">
+                            following an <b>acquire</b> can't start before it completes
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+        </div><div class="step step-slide spoiler" id="overview" data-z="2" data-x="3500" data-y="2000" data-scale="9" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(3500px, 2000px, 2px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(9) scaleY(9) scaleZ(1);">
+            <div class="text-center">
+                <h1 style="color: #ea2d2e; margin-bottom: 20px;">Write Once</h1>
+                <img class="graph" src="./Java Concurrency Under The Hood_files/wora.png">
+                <h1 style="color: #0074bd;">Run Anywhere</h1>
+            </div>
+        </div><div class="step spoiler very-spoiler" id="mad-scientist" data-z="1" data-x="-1600" data-y="6500" data-scale="25" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1600px, 6500px, 1px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(25) scaleY(25) scaleZ(1);">
+            <div class="text-center">
+                <img class="graph" src="./Java Concurrency Under The Hood_files/mad-scientist.png">
+                <h1>LIVE DEMO TIME!</h1>
+            </div>
+        </div><div class="step step-slide" data-x="-2600" data-y="2000" id="step-60" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-2600px, 2000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                If All You Have Is This Presentation
+            </h1>
+            <p>
+                The live demo consisted of the following stuff:
+            </p>
+                <ul>
+                    <li>A demonstration of how things really fail w/o deliberate effort</li>
+                    <li>Digging through OpenJDK and seeing how volatiles are handled</li>
+                    <li>Removing the special handling of volatiles from OpenJDK</li>
+                </ul>
+            <p>
+                To catch on, you might want to check out:
+                </p><ul>
+                    <li>Some video recording of the live demo</li>
+                    <li><a href="http://gvsmirnov.ru/blog/tech/2014/02/10/jmm-under-the-hood.html"><u><small>http://gvsmirnov.ru/blog/tech/2014/02/10/jmm-under-the-hood.html</small></u></a></li>
+                </ul>
+            <p></p>
+        </div><div class="step step-slide" data-x="-1300" data-y="2000" data-rotate="90" id="step-61" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 2000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                Mere Visibility Is Often Not Enough
+            </h1>
+            <div class="row">
+                <div class="col-md-5 will-fade" data-jmpress="fade">
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">class</span><span class="pln"> </span><span class="typ">Foo</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">volatile</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> a</span><span class="pun">;</span><span class="pln">
+    </span><span class="com">//...</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> bar</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        a</span><span class="pun">++;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+                </div>
+                <div class="col-md-2 text-center will-fade" data-jmpress="fade">
+                    <h1>→</h1>
+                </div>
+                <div class="col-md-5 will-fade" data-jmpress="fade">
+<pre class="prettyprint lang-java prettyprinted"><span class="lit">0</span><span class="pun">:</span><span class="pln"> aload_0
+</span><span class="lit">1</span><span class="pun">:</span><span class="pln"> dup
+</span><span class="text-highlighted"><span class="lit">2</span><span class="pun">:</span><span class="pln"> getfield</span></span><span class="pln">
+</span><span class="lit">5</span><span class="pun">:</span><span class="pln"> iconst_1</span><span data-jmpress="appear" class="nocode text-danger will-appear"><br>   ← Some other thread</span><span class="pln">
+</span><span class="lit">6</span><span class="pun">:</span><span class="pln"> iadd
+</span><span class="text-highlighted"><span class="lit">7</span><span class="pun">:</span><span class="pln"> putfield</span></span><span class="pln">
+</span><span class="lit">10</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span></pre>
+                </div>
+            </div>
+        </div><div class="step spoiler step-slide" data-x="-1300" data-y="2000" data-rotate="90" id="step-62" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 2000px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="jumbotron text-center">
+                <h1 class="margin-a-lot">
+                    <span class="text-giant">Yay <code>AtomicStuff</code></span>
+                </h1>
+            </div>
+        </div><div class="step step-slide" data-x="-1300" data-y="3300" data-rotate="90" id="step-63" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 3300px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                Mere <code>AtomicStuff</code> Is Not Enough Either
+            </h1>
+
+<pre class="prettyprint lang-java prettyprinted"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> execute</span><span class="pun">(</span><span class="typ">Action</span><span class="pln"> action</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> userId</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">lastResult </span><span class="pun">=</span><span class="pln"> action</span><span class="pun">.</span><span class="pln">execute</span><span class="pun">();</span><span data-jmpress="appear" class="nocode text-danger will-appear"><br>    // Please don't observe me here!</span><span class="pln">
+    </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">lastUserId </span><span class="pun">=</span><span class="pln"> userId</span><span class="pun">;</span><span data-jmpress="appear" class="nocode text-danger will-appear"><br>    // Also here, please-please</span><span class="pln">
+    </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">lastAction </span><span class="pun">=</span><span class="pln"> action</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+        </div><div class="step spoiler step-slide" data-x="-1300" data-y="3300" data-rotate="90" id="step-64" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 3300px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="jumbotron text-center text-v-center">
+                <h1>
+                    <span class="text-bigger">That's a Critical Section!</span>
+                </h1>
+            </div>
+        </div><div class="step step-slide" data-x="-1300" data-y="4600" data-rotate="90" id="step-65" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 4600px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                Mutual Exclusion
+            </h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    No two threads are in the same <b>critical section</b> simultaneously
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    A <b>lock</b> can be used to enforce it
+                    <ul>
+                        <li data-jmpress="fade" class="will-fade">Can be <b>acquired</b> (locked)</li>
+                        <li data-jmpress="fade" class="will-fade">And <b>released</b> (unlocked)</li>
+                    </ul>
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-x="-1300" data-y="5900" data-rotate="90" id="step-66" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 5900px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                Synchronization
+            </h1>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    Some thread may want to <b>wait</b> for some other thread
+                </li>
+
+                <li data-jmpress="fade" class="will-fade">
+                    <b>Condition Variables</b> are used to achieve this
+                    <ul>
+                        <li data-jmpress="fade" class="will-fade">A condition variable allows to <b>wait</b> for an event</li>
+                        <li data-jmpress="fade" class="will-fade">And <b>notify</b> a waiting thread of an event happening</li>
+                    </ul>
+                </li>
+
+                <li data-jmpress="fade" class="will-fade">
+                    Don't want to burn CPU cycles needlessly when waiting
+                </li>
+
+                <li data-jmpress="fade" class="list-unstyled will-fade">
+                    Therefore, threads may be <b>parked</b> by the OS
+                </li>
+            </ul>
+        </div><div class="step step-slide" data-x="-1300" data-y="7200" data-rotate="90" id="step-67" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1300px, 7200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(90deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                Monitor = Lock + Condition Variable
+            </h1>
+
+            <p data-jmpress="fade" class="will-fade">
+                Can be in one of the following states:
+            </p>
+
+            <ul>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>Thin</b>: has no contention on it, <b>atomics</b> are used to acquire it
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>Inflated</b>: threads are <b>parked</b> when waiting for acquisition
+                </li>
+                <li data-jmpress="fade" class="will-fade">
+                    <b>Biased</b>: can be cheaply acquired by <b>one thread</b>,
+                    but it is expensive when multiple threads are trying to acquire it
+                </li>
+            </ul>
+        </div><div class="step" id="mad-scientist-2" data-z="3" data-x="-1600" data-y="6500" data-scale="25" data-rotate="180" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-1600px, 6500px, 3px) rotateX(0deg) rotateY(0deg) rotateZ(180deg) scaleX(25) scaleY(25) scaleZ(1);"></div><div class="step step-slide" data-x="-2600" data-y="1200" id="step-69" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-2600px, 1200px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <h1>
+                If All You Have Is This Presentation
+            </h1>
+            <p>
+                The live demo consisted of the following stuff:
+            </p>
+            <ul>
+                <li>A demonstration of how AtomicInteger works</li>
+                <li>Synchronized blocks implementation, also <code>j.u.c.locks.*</code></li>
+                <li><code>wait/notify</code> blocks and <code>CountDownLatch</code></li>
+            </ul>
+            <p>
+                To catch on, you might want to check out:
+            </p><ul>
+                <li>Some video recording of the live demo</li>
+                <li>An upcoming entry in my blog, stay tuned! <!-- TODO --></li>
+            </ul>
+            <p></p>
+        </div><div class="step step-slide" data-x="-2600" id="links" style="position: absolute; transform-style: preserve-3d; transform: translate(-50%, -50%) translate3d(-2600px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scaleX(1) scaleY(1) scaleZ(1);">
+            <div class="text-center">
+                <img class="graph" src="./Java Concurrency Under The Hood_files/qr.png">
+
+                <h2>
+                    <a href="http://gvsmirnov.ru/docs/presentations/java-concurrency-hands-on">
+                        http://gvsmirnov.ru/docs/presentations/<br>java-concurrency-hands-on
+                    </a>
+                </h2>
+            </div>
+        </div></div></div>
+
+    <div id="laser" style="left: 1116px; top: 1px;"></div>
+
+    <script type="text/javascript">
+        !function ($) {
+            $(function(){
+
+                $('#impress').jmpress({
+                    "mouse": { clickSelects: false },
+                    "beforeChange": function(element, eventData) {
+                        element = $(element);
+                        if(element.is('tr') || element.hasClass("visit-me")) {
+                            element.addClass('visited'); // code should not be hidden after visiting
+                        }
+                    }
+                });
+
+                window.prettyPrint && prettyPrint()
+                $('body').mousemove(function(e){
+                    $('#laser').css('left', e.clientX).css('top', e.clientY);
+                });
+            });
+        }(window.jQuery)
+    </script>
+
+
+</body></html>
