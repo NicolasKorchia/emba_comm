@@ -18,6 +18,18 @@ body {
 	width : 500px;
 }
 
+.capotes {
+    text-align: right;
+    position: absolute;
+	display:block;
+    top: 30px;
+    left: 380px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0px 0px 0px 0px;
+	width : 500px;
+}
+
 .panda {
     text-align: right;
 	display:block;
