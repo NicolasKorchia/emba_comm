@@ -10,12 +10,16 @@ body {
     text-align: right;
     position: absolute;
 	display:block;
-    top: 100px;
+    top: 50px;
     left: 380px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0px 0px 0px 0px;
 	width : 500px;
+}
+
+.separator {
+	color : LightGrey;
 }
 
 .capotes {
@@ -32,21 +36,20 @@ body {
 
 .panda {
     text-align: right;
+    position: relative;
 	display:block;
 	opacity:0.3;
-    position: absolute;
-    top: 50px;
-    left: 250px;
+    top: 10px;
+    left: 120px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0px 0px 0px 0px;
-	width : 100px;
+	width : 70px;
 }
 
 .receipt {
 	display:block;
-	width : 281px;
-	height : 8px;
+	width : 310px;
 }
 
 /** STEP STYLES **/
@@ -55,7 +58,7 @@ body {
     height: 500px;
 
 	display: block;
-    padding: 40px 60px;
+    padding: 20px 60px;
     border-radius: 10px;
 
     color: black;
