@@ -9,11 +9,32 @@ body {
 .tree {
     text-align: right;
     position: absolute;
+	display:block;
     top: 100px;
     left: 380px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0px 0px 0px 0px;
+	width : 500px;
+}
+
+.panda {
+    text-align: right;
+	display:block;
+	opacity:0.3;
+    position: absolute;
+    top: 50px;
+    left: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0px 0px 0px 0px;
+	width : 100px;
+}
+
+.receipt {
+	display:block;
+	width : 281px;
+	height : 8px;
 }
 
 /** STEP STYLES **/
