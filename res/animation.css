@@ -20,7 +20,7 @@ body {
     position: absolute;
 	display:block;
     top: 50px;
-    left: 380px;
+    left: 400px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0px 0px 0px 0px;
@@ -90,6 +90,10 @@ body {
 	opacity: 0.3;
 }
 
+.hideunactive:not(.active) {
+	opacity: 0;
+}
+
 
 /** ANIMATION **/
 .will-fade {
@@ -105,11 +109,4 @@ body {
 	opacity: 1;
 }
 
-.will-hideinpast {
-  opacity: 0;
-}
-
-.do-hideinfuture {
-  opacity: 0;
-}
 
