@@ -63,6 +63,19 @@ body {
 	width : 70px;
 }
 
+.sidaction {
+    text-align: right;
+    position: relative;
+	display:block;
+	opacity:0.3;
+    top: 10px;
+    left: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0px 0px 0px 0px;
+	height : 78px;
+}
+
 .receipt {
 	display:block;
 	width : 310px;
