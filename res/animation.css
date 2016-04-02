@@ -1,6 +1,9 @@
 /** GENERAL **/
 body {
-	font-family: Verdana, sans-serif;
+	font-family: courier,monotype;
+	font-size:15px;
+	color:#707070;
+	border-right:1px solid #f8f8f8;
 	min-height: 740px;
 	background-color: #FFF;
 	-webkit-font-smoothing: antialiased;
@@ -13,6 +16,10 @@ body {
 	font-variant: normal;
 	font-weight: 400;
 	line-height: 44px;
+}
+
+.font20{
+	font-size: 18px;
 }
 
 .tree {
