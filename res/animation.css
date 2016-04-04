@@ -94,11 +94,11 @@ body {
 	display:block;
 	opacity:0.3;
     top: 10px;
-    left: 110px;
+    left: 70px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0px 0px 0px 0px;
-	width : 90px;
+	width : 160px;
 }
 
 .receipt {
